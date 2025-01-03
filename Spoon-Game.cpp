@@ -3,7 +3,50 @@
 #include "Console.h"
 using namespace std;
 
-void menu(Console c, int *x, int *y)
+void map(Console c, char Difficulty)
+{
+    system("cls");
+
+    int x = 0;
+    int y = 0;
+
+    for (int i = 0; i < 21; i++)
+    {
+        x = 0;
+        c.gotoxy(x, y);
+        if (y == 0 || y == 20)
+        {
+            cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
+        }
+        else if (y % 2 == 0)
+        {
+            cout << "* -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- *";
+        }
+        else
+        {
+            // cout << "*\t\t\t\t\t\t\t\t       *";
+            c.gotoxy(x, y);
+            cout << "*";
+            for (int j = 0; j < 69; j++)
+            {
+                x++;
+                c.gotoxy(x, y);
+                if (x % 4 == 0)
+                    cout << "|";
+            }
+            x--;
+            c.gotoxy(x, y);
+            cout << "*";
+        }
+        y += 1;
+    }
+    while (true)
+    {
+        c.gotoxy(x, y);
+    }
+}
+
+int menu(Console c, int *x, int *y)
 {
     system("cls"); // clearing the screen
 
@@ -41,6 +84,7 @@ void menu(Console c, int *x, int *y)
     *y = 15;
     *x -= 5;
     c.gotoxy(*x, *y);
+    cout << "-->";
 
     char key;
     while (true)
@@ -49,25 +93,35 @@ void menu(Console c, int *x, int *y)
         switch (key)
         {
         case 's':
-            c.gotoxy(*x, *y);
-            cout << "   ";
-            *y += 2;
-            c.gotoxy(*x, *y);
-            cout << "-->";
+            if (*y < 25)
+            {
+                c.gotoxy(*x, *y);
+                cout << "   ";
+                *y += 2;
+                c.gotoxy(*x, *y);
+                cout << "-->";
+            }
             break;
         case 'w':
-            c.gotoxy(*x, *y);
-            cout << "   ";
-            *y -= 2;
-            c.gotoxy(*x, *y);
-            cout << "-->";
+            if (*y > 15)
+            {
+                c.gotoxy(*x, *y);
+                cout << "   ";
+                *y -= 2;
+                c.gotoxy(*x, *y);
+                cout << "-->";
+            }
             break;
         case 13:
-            if (*y == 25)
+            if (*y == 15)
+            {
+                return 1;
+            }
+            else if (*y == 25)
             {
                 system("cls");
                 cout << "Thanks For Playing ";
-                // system("PAUSE"); // End the program
+                return 6;
             }
             break;
         default:
@@ -80,14 +134,17 @@ int main()
 {
     Console c;
     char key;
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
 
     c.changeColor(2);
     c.setFullScreen();
-    menu(c, &x, &y);
-
-    c.gotoxy(10, 10);
-    cout << GetCursorPos;
-    return 0;
+    if (menu(c, &x, &y) == 1)
+    {
+        map(c, 'L');
+    }
+    else
+    {
+        return 0;
+    }
 }
