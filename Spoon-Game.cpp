@@ -40,10 +40,6 @@ void map(Console c, char Difficulty)
         }
         y += 1;
     }
-    while (true)
-    {
-        c.gotoxy(x, y);
-    }
 }
 
 int menu(Console c, int *x, int *y)
@@ -130,6 +126,53 @@ int menu(Console c, int *x, int *y)
     }
 }
 
+void placeCharacter(Console c, int *x, int *y, string character)
+{
+    c.gotoxy(*x, *y);
+    cout << character;
+    char key;
+    while (true)
+    {
+        key = getch();
+        switch (key)
+        {
+        case 'w':
+            c.gotoxy(*x, *y);
+            cout << "  ";
+            *y -= 2;
+            c.gotoxy(*x, *y);
+            cout << character;
+            break;
+
+        case 's':
+            c.gotoxy(*x, *y);
+            cout << "  ";
+            *y += 2;
+            c.gotoxy(*x, *y);
+            cout << character;
+            break;
+
+        case 'd':
+            c.gotoxy(*x, *y);
+            cout << "  ";
+            *x += 4;
+            c.gotoxy(*x, *y);
+            cout << character;
+            break;
+
+        case 'a':
+            c.gotoxy(*x, *y);
+            cout << "  ";
+            *x -= 4;
+            c.gotoxy(*x, *y);
+            cout << character;
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 int main()
 {
     Console c;
@@ -142,6 +185,8 @@ int main()
     if (menu(c, &x, &y) == 1)
     {
         map(c, 'L');
+        x = 2, y = 1;
+        placeCharacter(c, &x, &y, "SS");
     }
     else
     {
