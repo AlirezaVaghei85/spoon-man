@@ -24,7 +24,6 @@ void map(Console c, char Difficulty)
         }
         else
         {
-            // cout << "*\t\t\t\t\t\t\t\t       *";
             c.gotoxy(x, y);
             cout << "*";
             for (int j = 0; j < 69; j++)
@@ -32,11 +31,19 @@ void map(Console c, char Difficulty)
                 x++;
                 c.gotoxy(x, y);
                 if (x % 4 == 0)
+                {
                     cout << "|";
+                }
             }
             x--;
             c.gotoxy(x, y);
             cout << "*";
+            for (int y = 3; y < 20; y += 4)
+                for (int x = 5; x < 69; x += 8)
+                {
+                    c.gotoxy(x, y);
+                    cout << "XX";
+                }
         }
         y += 1;
     }
@@ -137,35 +144,47 @@ void placeCharacter(Console c, int *x, int *y, string character)
         switch (key)
         {
         case 'w':
-            c.gotoxy(*x, *y);
-            cout << "  ";
-            *y -= 2;
-            c.gotoxy(*x, *y);
-            cout << character;
+            if (*y > 1)
+            {
+                c.gotoxy(*x, *y);
+                cout << "  ";
+                *y -= 2;
+                c.gotoxy(*x, *y);
+                cout << character;
+            }
             break;
 
         case 's':
-            c.gotoxy(*x, *y);
-            cout << "  ";
-            *y += 2;
-            c.gotoxy(*x, *y);
-            cout << character;
+            if (*y < 19)
+            {
+                c.gotoxy(*x, *y);
+                cout << "  ";
+                *y += 2;
+                c.gotoxy(*x, *y);
+                cout << character;
+            }
             break;
 
         case 'd':
-            c.gotoxy(*x, *y);
-            cout << "  ";
-            *x += 4;
-            c.gotoxy(*x, *y);
-            cout << character;
+            if (*x < 66)
+            {
+                c.gotoxy(*x, *y);
+                cout << "  ";
+                *x += 4;
+                c.gotoxy(*x, *y);
+                cout << character;
+            }
             break;
 
         case 'a':
-            c.gotoxy(*x, *y);
-            cout << "  ";
-            *x -= 4;
-            c.gotoxy(*x, *y);
-            cout << character;
+            if (*x > 2)
+            {
+                c.gotoxy(*x, *y);
+                cout << "  ";
+                *x -= 4;
+                c.gotoxy(*x, *y);
+                cout << character;
+            }
             break;
         default:
             break;
