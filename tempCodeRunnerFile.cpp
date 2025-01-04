@@ -3,30 +3,50 @@
 #include "Console.h"
 using namespace std;
 
-void map(Console c, char Difficulty)
+void map(Console c, char Difficulty, int MaxX, int MaxY)
 {
     system("cls");
 
     int x = 0;
     int y = 0;
 
-    for (int i = 0; i < 21; i++)
+    for (int i = 0; i < MaxY + 1; i++)
     {
         x = 0;
         c.gotoxy(x, y);
-        if (y == 0 || y == 20)
+        if (y == 0 || y == MaxY)
         {
-            cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
+            for (int j = 0; j < MaxX / 2; j++)
+            {
+                cout << "*-";
+            }
+            cout << "*";
         }
         else if (y % 2 == 0)
         {
-            cout << "* -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- *";
+            x = 0;
+            for (int j = 0; j < MaxX; j++)
+            {
+                if (j == 0)
+                {
+                    cout << "*";
+                }
+                else if (j % 3 == 0 || j % 3 == 2)
+                {
+                    cout << "-";
+                }
+                x++;
+                c.gotoxy(x,y);
+            }
+            x--;
+            c.gotoxy(x,y);
+            cout << "*";
         }
         else
         {
             c.gotoxy(x, y);
             cout << "*";
-            for (int j = 0; j < 69; j++)
+            for (int j = 0; j < MaxX; j++)
             {
                 x++;
                 c.gotoxy(x, y);
@@ -38,8 +58,8 @@ void map(Console c, char Difficulty)
             x--;
             c.gotoxy(x, y);
             cout << "*";
-            for (int y = 3; y < 20; y += 4)
-                for (int x = 5; x < 69; x += 8)
+            for (int y = 3; y < MaxY; y += 4)
+                for (int x = 5; x < MaxX; x += 8)
                 {
                     c.gotoxy(x, y);
                     cout << "XX";
@@ -133,7 +153,7 @@ int menu(Console c, int *x, int *y)
     }
 }
 
-void placeCharacter(Console c, int *x, int *y, string character)
+void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int MaxY)
 {
     c.gotoxy(*x, *y);
     cout << character;
@@ -155,7 +175,7 @@ void placeCharacter(Console c, int *x, int *y, string character)
             break;
 
         case 's':
-            if (*y < 19)
+            if (*y < MaxY - 1)
             {
                 c.gotoxy(*x, *y);
                 cout << "  ";
@@ -166,7 +186,7 @@ void placeCharacter(Console c, int *x, int *y, string character)
             break;
 
         case 'd':
-            if (*x < 66)
+            if (*x < MaxX - 3)
             {
                 c.gotoxy(*x, *y);
                 cout << "  ";
@@ -198,14 +218,16 @@ int main()
     char key;
     int x = 0;
     int y = 0;
+    int MaxX = 65;
+    int MaxY = 4;
 
     c.changeColor(2);
     c.setFullScreen();
     if (menu(c, &x, &y) == 1)
     {
-        map(c, 'L');
+        map(c, 'L', MaxX, MaxY);
         x = 2, y = 1;
-        placeCharacter(c, &x, &y, "SS");
+        placeCharacter(c, &x, &y, "SS", MaxX, MaxY);
     }
     else
     {
