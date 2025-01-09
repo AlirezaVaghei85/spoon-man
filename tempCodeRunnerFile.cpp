@@ -234,7 +234,10 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                         c.gotoxy(*x, *y);
                         cout << "   ";
                     }
-                    f->COORD[*x][*y] = 'f';
+                    if (f->COORD[*x][*y] == 'p')
+                    {
+                        f->COORD[*x][*y] = 'f';
+                    }
                     *y -= 2;
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
@@ -253,7 +256,10 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                         c.gotoxy(*x, *y);
                         cout << "   ";
                     }
-                    f->COORD[*x][*y] = 'f';
+                    if (f->COORD[*x][*y] == 'p')
+                    {
+                        f->COORD[*x][*y] = 'f';
+                    }
                     *y += 2;
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
@@ -272,7 +278,10 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                         c.gotoxy(*x, *y);
                         cout << "   ";
                     }
-                    f->COORD[*x][*y] = 'f';
+                    if (f->COORD[*x][*y] == 'p')
+                    {
+                        f->COORD[*x][*y] = 'f';
+                    }
                     *x += 4;
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
@@ -291,7 +300,10 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                         c.gotoxy(*x, *y);
                         cout << "   ";
                     }
-                    f->COORD[*x][*y] = 'f';
+                    if (f->COORD[*x][*y] == 'p')
+                    {
+                        f->COORD[*x][*y] = 'f';
+                    }
                     *x -= 4;
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
@@ -307,34 +319,44 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
             cout << "BOM";
             break;
         case 'q':
+            f->COORD[Bomb_X][Bomb_Y] = 'f';
             c.gotoxy(Bomb_X, Bomb_Y);
             cout << "   ";
-            if (f->COORD[Bomb_X + 4][Bomb_Y] != 'c')
+            if (Bomb_X + 4 < MaxX - 4)
             {
-                c.gotoxy(Bomb_X + 4, Bomb_Y);
-                cout << "   ";
-                f->COORD[Bomb_X + 4][Bomb_Y] = 'f';
+                if (f->COORD[Bomb_X + 4][Bomb_Y] != 'c')
+                {
+                    c.gotoxy(Bomb_X + 4, Bomb_Y);
+                    cout << "   ";
+                    f->COORD[Bomb_X + 4][Bomb_Y] = 'f';
+                }
             }
-
-            if (f->COORD[Bomb_X - 4][Bomb_Y] != 'c')
+            if (Bomb_X - 4 > 2)
             {
-                c.gotoxy(Bomb_X - 4, Bomb_Y);
-                cout << "   ";
-                f->COORD[Bomb_X - 4][Bomb_Y] = 'f';
+                if (f->COORD[Bomb_X - 4][Bomb_Y] != 'c')
+                {
+                    c.gotoxy(Bomb_X - 4, Bomb_Y);
+                    cout << "   ";
+                    f->COORD[Bomb_X - 4][Bomb_Y] = 'f';
+                }
             }
-
-            if (f->COORD[Bomb_X][Bomb_Y + 2] != 'c')
+            if (Bomb_Y - 2 > 1)
             {
-                c.gotoxy(Bomb_X, Bomb_Y + 2);
-                cout << "   ";
-                f->COORD[Bomb_X][Bomb_Y + 2] = 'f';
+                if (f->COORD[Bomb_X][Bomb_Y - 2] != 'c')
+                {
+                    c.gotoxy(Bomb_X, Bomb_Y - 2);
+                    cout << "   ";
+                    f->COORD[Bomb_X][Bomb_Y - 2] = 'f';
+                }
             }
-
-            if (f->COORD[Bomb_X][Bomb_Y - 2] != 'c')
+            if (Bomb_Y + 2 < MaxY - 1)
             {
-                c.gotoxy(Bomb_X, Bomb_Y - 2);
-                cout << "   ";
-                f->COORD[Bomb_X][Bomb_Y - 2] = 'f';
+                if (f->COORD[Bomb_X][Bomb_Y + 2] != 'c')
+                {
+                    c.gotoxy(Bomb_X, Bomb_Y + 2);
+                    cout << "   ";
+                    f->COORD[Bomb_X][Bomb_Y + 2] = 'f';
+                }
             }
             break;
         default:
