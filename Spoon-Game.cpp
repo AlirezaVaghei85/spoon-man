@@ -33,11 +33,6 @@ struct Coordinate_System
     }
 };
 
-void Game_Over()
-{
-    system("cls");
-}
-
 void bomb(Console c, Coordinate_System *f, int x, int y)
 {
     static char key;
@@ -215,11 +210,37 @@ int menu(Console c, int *x, int *y)
     }
 }
 
+void Block(Console c, int MaxY, int n, int X_Blocks, Coordinate_System *f)
+{
+    srand(time(0));
+    int randomNum;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 1; j < MaxY; j += 2)
+        {
+            randomNum = ((rand() % X_Blocks) * 4) + 1;
+            if (!((randomNum == 1 && j == 1) || (randomNum == 5 && j == 1) || (randomNum == 1 && j == 3)))
+            {
+                c.changeColor(13);
+                c.gotoxy(randomNum, j);
+                cout << "_-_";
+                f->COORD[randomNum][j] = 'b';
+            }
+        }
+    }
+}
+
+void Game_Over()
+{
+    system("cls");
+}
+
 void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int MaxY, Coordinate_System *f)
 {
     c.gotoxy(*x, *y);
     c.changeColor(14);
     cout << character;
+    f->COORD[*x][*y] = 'p';
     char key;
     int Bomb_X;
     int Bomb_Y;
@@ -333,7 +354,13 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                 {
                     c.gotoxy(Bomb_X + 4, Bomb_Y);
                     cout << "   ";
-                    f->COORD[Bomb_X + 4][Bomb_Y] = 'f';
+                    if (f->COORD[Bomb_X + 4][Bomb_Y] == 'p')
+                    {
+                        Game_Over();
+                        return;
+                    }
+                    else
+                        f->COORD[Bomb_X + 4][Bomb_Y] = 'f';
                 }
             }
             if (Bomb_X - 4 > 2)
@@ -342,7 +369,13 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                 {
                     c.gotoxy(Bomb_X - 4, Bomb_Y);
                     cout << "   ";
-                    f->COORD[Bomb_X - 4][Bomb_Y] = 'f';
+                    if (f->COORD[Bomb_X - 4][Bomb_Y] == 'p')
+                    {
+                        Game_Over();
+                        return;
+                    }
+                    else
+                        f->COORD[Bomb_X - 4][Bomb_Y] = 'f';
                 }
             }
             if (Bomb_Y - 2 > 1)
@@ -351,7 +384,13 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                 {
                     c.gotoxy(Bomb_X, Bomb_Y - 2);
                     cout << "   ";
-                    f->COORD[Bomb_X][Bomb_Y - 2] = 'f';
+                    if (f->COORD[Bomb_X][Bomb_Y - 2] == 'p')
+                    {
+                        Game_Over();
+                        return;
+                    }
+                    else
+                        f->COORD[Bomb_X][Bomb_Y - 2] = 'f';
                 }
             }
             if (Bomb_Y + 2 < MaxY - 1)
@@ -360,32 +399,18 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                 {
                     c.gotoxy(Bomb_X, Bomb_Y + 2);
                     cout << "   ";
-                    f->COORD[Bomb_X][Bomb_Y + 2] = 'f';
+                    if (f->COORD[Bomb_X][Bomb_Y + 2] == 'p')
+                    {
+                        Game_Over();
+                        return;
+                    }
+                    else
+                        f->COORD[Bomb_X][Bomb_Y + 2] = 'f';
                 }
             }
             break;
         default:
             break;
-        }
-    }
-}
-
-void Block(Console c, int MaxY, int n, int X_Blocks, Coordinate_System *f)
-{
-    srand(time(0));
-    int randomNum;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 1; j < MaxY; j += 2)
-        {
-            randomNum = ((rand() % X_Blocks) * 4) + 1;
-            if (!((randomNum == 1 && j == 1) || (randomNum == 5 && j == 1) || (randomNum == 1 && j == 3)))
-            {
-                c.changeColor(13);
-                c.gotoxy(randomNum, j);
-                cout << "_-_";
-                f->COORD[randomNum][j] = 'b';
-            }
         }
     }
 }
@@ -402,20 +427,24 @@ int main()
 
     Coordinate_System f;
     f.ini();
+    while (true)
+    {
+        c.changeColor(10);
+        c.setFullScreen();
+        if (menu(c, &x, &y) == 1)
+        {
+            system("cls");
+            Block(c, MaxY, 5, X_Blocks, &f);
+            map(c, 'L', MaxX, MaxY, &f);
+            c.changeColor(8);
+            x = 1, y = 1;
+            placeCharacter(c, &x, &y, "SS", MaxX, MaxY, &f);
+        }
+        else if (menu(c, &x, &y) == 6)
+        {
+            break;
+        }
+        }
 
-    c.changeColor(10);
-    c.setFullScreen();
-    if (menu(c, &x, &y) == 1)
-    {
-        system("cls");
-        Block(c, MaxY, 5, X_Blocks, &f);
-        map(c, 'L', MaxX, MaxY, &f);
-        c.changeColor(8);
-        x = 1, y = 1;
-        placeCharacter(c, &x, &y, "SS", MaxX, MaxY, &f);
-    }
-    else
-    {
-        return 0;
-    }
+    return 0;
 }
