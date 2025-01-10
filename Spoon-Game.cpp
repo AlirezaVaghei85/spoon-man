@@ -342,13 +342,14 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
             Bomb_Y = *y;
             c.gotoxy(Bomb_X, Bomb_Y);
             f->COORD[Bomb_X][Bomb_Y] = 'b';
+            c.changeColor(15);
             cout << "BOM";
             break;
         case 'q':
             f->COORD[Bomb_X][Bomb_Y] = 'f';
             c.gotoxy(Bomb_X, Bomb_Y);
             cout << "   ";
-            if (Bomb_X + 4 < MaxX - 4)
+            if (Bomb_X + 4 <= MaxX - 4)
             {
                 if (f->COORD[Bomb_X + 4][Bomb_Y] != 'c')
                 {
@@ -363,7 +364,7 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                         f->COORD[Bomb_X + 4][Bomb_Y] = 'f';
                 }
             }
-            if (Bomb_X - 4 > 2)
+            if (Bomb_X - 4 >= 1)
             {
                 if (f->COORD[Bomb_X - 4][Bomb_Y] != 'c')
                 {
@@ -378,7 +379,7 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                         f->COORD[Bomb_X - 4][Bomb_Y] = 'f';
                 }
             }
-            if (Bomb_Y - 2 > 1)
+            if (Bomb_Y - 2 >= 1)
             {
                 if (f->COORD[Bomb_X][Bomb_Y - 2] != 'c')
                 {
@@ -393,7 +394,7 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                         f->COORD[Bomb_X][Bomb_Y - 2] = 'f';
                 }
             }
-            if (Bomb_Y + 2 < MaxY - 1)
+            if (Bomb_Y + 2 <= MaxY - 1)
             {
                 if (f->COORD[Bomb_X][Bomb_Y + 2] != 'c')
                 {
@@ -425,12 +426,12 @@ int main()
     int MaxY = 20;
     int X_Blocks = (MaxX - 1) / 4;
 
-    Coordinate_System f;
-    f.ini();
+    c.changeColor(10);
+    c.setFullScreen();
     while (true)
     {
-        c.changeColor(10);
-        c.setFullScreen();
+        Coordinate_System f;
+        f.ini();
         if (menu(c, &x, &y) == 1)
         {
             system("cls");
@@ -444,7 +445,7 @@ int main()
         {
             break;
         }
-        }
+    }
 
     return 0;
 }
