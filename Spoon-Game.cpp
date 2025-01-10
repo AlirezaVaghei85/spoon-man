@@ -3,7 +3,10 @@
 #include "Console.h"
 #include <stdlib.h>
 #include <ctime>
+#include <fstream>
 using namespace std;
+#define Esc_key 27
+#define Enter_key 13
 
 struct Coordinate_System
 {
@@ -20,41 +23,11 @@ struct Coordinate_System
         }
     }
 
-    void display()
+    void Save_to_file()
     {
-        for (int i = 0; i < 300; i++)
-        {
-            for (int j = 0; j < 300; j++)
-            {
-                cout << COORD[i][j] << ", ";
-            }
-            cout << endl;
-        }
+        ofstream last_state("Last_State.txt");
     }
 };
-
-void bomb(Console c, Coordinate_System *f, int x, int y)
-{
-    static char key;
-    f->COORD[x][y] = 'b';
-    while (f->COORD[x][y] == 'b')
-    {
-        if (f->COORD[x][y] == 'f')
-        {
-            c.gotoxy(x, y);
-            cout << "BOM";
-        }
-        switch (key)
-        {
-        case 'q':
-            c.gotoxy(x, y);
-            break;
-
-        default:
-            break;
-        }
-    }
-}
 
 void map(Console c, char Difficulty, int MaxX, int MaxY, Coordinate_System *f)
 {
@@ -192,7 +165,7 @@ int menu(Console c, int *x, int *y)
                 cout << "-->";
             }
             break;
-        case 13:
+        case Enter_key:
             if (*y == 15)
             {
                 return 1;
@@ -225,6 +198,26 @@ void Block(Console c, int MaxY, int n, int X_Blocks, Coordinate_System *f)
                 c.gotoxy(randomNum, j);
                 cout << "_-_";
                 f->COORD[randomNum][j] = 'b';
+            }
+        }
+    }
+}
+
+void Enemy(Console c, int MaxY, int n, int X_Blocks, Coordinate_System *f)
+{
+    srand(time(0));
+    int randomNum;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 1; j < MaxY; j += 2)
+        {
+            randomNum = ((rand() % X_Blocks) * 4) + 1;
+            if (!((randomNum == 1 && j == 1) || (randomNum == 5 && j == 1) || (randomNum == 1 && j == 3)))
+            {
+                c.changeColor(12);
+                c.gotoxy(randomNum, j);
+                cout << "O-O";
+                f->COORD[randomNum][j] = 'e';
             }
         }
     }
@@ -269,6 +262,11 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     c.gotoxy(*x, *y);
                     cout << character;
                 }
+                else if (f->COORD[*x][*y - 2] == 'e')
+                {
+                    Game_Over();
+                    return;
+                }
             }
             break;
 
@@ -290,6 +288,11 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                }
+                else if (f->COORD[*x][*y + 2] == 'e')
+                {
+                    Game_Over();
+                    return;
                 }
             }
             break;
@@ -313,6 +316,11 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     c.gotoxy(*x, *y);
                     cout << character;
                 }
+                else if (f->COORD[*x + 4][*y] == 'e')
+                {
+                    Game_Over();
+                    return;
+                }
             }
             break;
 
@@ -334,6 +342,11 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                }
+                else if (f->COORD[*x - 4][*y] == 'e')
+                {
+                    Game_Over();
+                    return;
                 }
             }
             break;
@@ -410,6 +423,9 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                 }
             }
             break;
+        case Esc_key:
+            return;
+            break;
         default:
             break;
         }
@@ -436,6 +452,7 @@ int main()
         {
             system("cls");
             Block(c, MaxY, 5, X_Blocks, &f);
+            Enemy(c, MaxY, 2, X_Blocks, &f);
             map(c, 'L', MaxX, MaxY, &f);
             c.changeColor(8);
             x = 1, y = 1;
