@@ -183,10 +183,11 @@ int menu(Console c, int *x, int *y)
     }
 }
 
-void Block(Console c, int MaxY, int n, int X_Blocks, Coordinate_System *f)
+void Block(Console c, int MaxX, int MaxY, int n, int X_Blocks, Coordinate_System *f, int *randomGateX, int *randomGateY)
 {
     srand(time(0));
     int randomNum;
+    int k = 0;
     for (int i = 0; i < n; i++)
     {
         for (int j = 1; j < MaxY; j += 2)
@@ -198,8 +199,21 @@ void Block(Console c, int MaxY, int n, int X_Blocks, Coordinate_System *f)
                 c.gotoxy(randomNum, j);
                 cout << "_-_";
                 f->COORD[randomNum][j] = 'b';
+                if (rand() % (n * 2) == 0 && k == 0)
+                {
+                    *randomGateX = randomNum;
+                    *randomGateY = j;
+                    k++;
+                }
             }
         }
+    }
+    if (k == 0)
+    {
+        c.gotoxy(MaxX - 4, MaxY - 1);
+        cout << "-_-";
+        *randomGateX = MaxX - 4;
+        *randomGateY = MaxY - 1;
     }
 }
 
@@ -228,7 +242,7 @@ void Game_Over()
     system("cls");
 }
 
-void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int MaxY, Coordinate_System *f)
+void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int MaxY, Coordinate_System *f, int GateX, int GateY)
 {
     c.gotoxy(*x, *y);
     c.changeColor(14);
@@ -248,19 +262,32 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
             {
                 if (f->COORD[*x][*y - 2] == 'f')
                 {
-                    if (f->COORD[*x][*y] == 'f' || f->COORD[*x][*y] == 'p')
+                    if (f->COORD[*x][*y] == 'p')
                     {
                         c.gotoxy(*x, *y);
                         cout << "   ";
-                    }
-                    if (f->COORD[*x][*y] == 'p')
-                    {
                         f->COORD[*x][*y] = 'f';
+                    }
+                    else if (f->COORD[*x][*y] == 'g')
+                    {
+                        c.gotoxy(*x, *y);
+                        cout << "[ ]";
+                        f->COORD[*x][*y] = 'g';
                     }
                     *y -= 2;
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                }
+                else if (f->COORD[*x][*y - 2] == 'g')
+                {
+                    c.gotoxy(*x, *y);
+                    cout << "   ";
+                    f->COORD[*x][*y] = 'f';
+                    *y -= 2;
+                    f->COORD[*x][*y] = 'g';
+                    c.gotoxy(*x, *y);
+                    cout << "[S]";
                 }
                 else if (f->COORD[*x][*y - 2] == 'e')
                 {
@@ -275,19 +302,32 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
             {
                 if (f->COORD[*x][*y + 2] == 'f')
                 {
-                    if (f->COORD[*x][*y] == 'f' || f->COORD[*x][*y] == 'p')
+                    if (f->COORD[*x][*y] == 'p')
                     {
                         c.gotoxy(*x, *y);
                         cout << "   ";
-                    }
-                    if (f->COORD[*x][*y] == 'p')
-                    {
                         f->COORD[*x][*y] = 'f';
+                    }
+                    else if (f->COORD[*x][*y] == 'g')
+                    {
+                        c.gotoxy(*x, *y);
+                        cout << "[ ]";
+                        f->COORD[*x][*y] = 'g';
                     }
                     *y += 2;
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                }
+                else if (f->COORD[*x][*y + 2] == 'g')
+                {
+                    c.gotoxy(*x, *y);
+                    cout << "   ";
+                    f->COORD[*x][*y] = 'f';
+                    *y += 2;
+                    f->COORD[*x][*y] = 'g';
+                    c.gotoxy(*x, *y);
+                    cout << "[S]";
                 }
                 else if (f->COORD[*x][*y + 2] == 'e')
                 {
@@ -302,19 +342,32 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
             {
                 if (f->COORD[*x + 4][*y] == 'f')
                 {
-                    if (f->COORD[*x][*y] == 'f' || f->COORD[*x][*y] == 'p')
+                    if (f->COORD[*x][*y] == 'p')
                     {
                         c.gotoxy(*x, *y);
                         cout << "   ";
-                    }
-                    if (f->COORD[*x][*y] == 'p')
-                    {
                         f->COORD[*x][*y] = 'f';
+                    }
+                    else if (f->COORD[*x][*y] == 'g')
+                    {
+                        c.gotoxy(*x, *y);
+                        cout << "[ ]";
+                        f->COORD[*x][*y] = 'g';
                     }
                     *x += 4;
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                }
+                else if (f->COORD[*x + 4][*y] == 'g')
+                {
+                    c.gotoxy(*x, *y);
+                    cout << "   ";
+                    f->COORD[*x][*y] = 'f';
+                    *x += 4;
+                    f->COORD[*x][*y] = 'g';
+                    c.gotoxy(*x, *y);
+                    cout << "[S]";
                 }
                 else if (f->COORD[*x + 4][*y] == 'e')
                 {
@@ -329,19 +382,32 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
             {
                 if (f->COORD[*x - 4][*y] == 'f')
                 {
-                    if (f->COORD[*x][*y] == 'f' || f->COORD[*x][*y] == 'p')
+                    if (f->COORD[*x][*y] == 'p')
                     {
                         c.gotoxy(*x, *y);
                         cout << "   ";
-                    }
-                    if (f->COORD[*x][*y] == 'p')
-                    {
                         f->COORD[*x][*y] = 'f';
+                    }
+                    else if (f->COORD[*x][*y] == 'g')
+                    {
+                        c.gotoxy(*x, *y);
+                        cout << "[ ]";
+                        f->COORD[*x][*y] = 'g';
                     }
                     *x -= 4;
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                }
+                else if (f->COORD[*x - 4][*y] == 'g')
+                {
+                    c.gotoxy(*x, *y);
+                    cout << "   ";
+                    f->COORD[*x][*y] = 'f';
+                    *x -= 4;
+                    f->COORD[*x][*y] = 'g';
+                    c.gotoxy(*x, *y);
+                    cout << "[S]";
                 }
                 else if (f->COORD[*x - 4][*y] == 'e')
                 {
@@ -375,6 +441,12 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     }
                     else
                         f->COORD[Bomb_X + 4][Bomb_Y] = 'f';
+                    if (Bomb_X + 4 == GateX && Bomb_Y == GateY)
+                    {
+                        c.gotoxy(GateX, GateY);
+                        cout << "[ ]";
+                        f->COORD[GateX][GateY] = 'g';
+                    }
                 }
             }
             if (Bomb_X - 4 >= 1)
@@ -390,6 +462,12 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     }
                     else
                         f->COORD[Bomb_X - 4][Bomb_Y] = 'f';
+                    if (Bomb_X - 4 == GateX && Bomb_Y == GateY)
+                    {
+                        c.gotoxy(GateX, GateY);
+                        cout << "[ ]";
+                        f->COORD[GateX][GateY] = 'g';
+                    }
                 }
             }
             if (Bomb_Y - 2 >= 1)
@@ -405,6 +483,12 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     }
                     else
                         f->COORD[Bomb_X][Bomb_Y - 2] = 'f';
+                    if (Bomb_X == GateX && Bomb_Y - 2 == GateY)
+                    {
+                        c.gotoxy(GateX, GateY);
+                        cout << "[ ]";
+                        f->COORD[GateX][GateY] = 'g';
+                    }
                 }
             }
             if (Bomb_Y + 2 <= MaxY - 1)
@@ -420,6 +504,12 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     }
                     else
                         f->COORD[Bomb_X][Bomb_Y + 2] = 'f';
+                    if (Bomb_X == GateX && Bomb_Y + 2 == GateY)
+                    {
+                        c.gotoxy(GateX, GateY);
+                        cout << "[ ]";
+                        f->COORD[GateX][GateY] = 'g';
+                    }
                 }
             }
             break;
@@ -441,6 +531,8 @@ int main()
     int MaxX = 69;
     int MaxY = 20;
     int X_Blocks = (MaxX - 1) / 4;
+    int randomGateX;
+    int randomGateY;
 
     c.changeColor(10);
     c.setFullScreen();
@@ -451,12 +543,12 @@ int main()
         if (menu(c, &x, &y) == 1)
         {
             system("cls");
-            Block(c, MaxY, 5, X_Blocks, &f);
+            Block(c, MaxX, MaxY, 5, X_Blocks, &f, &randomGateX, &randomGateY);
             Enemy(c, MaxY, 2, X_Blocks, &f);
             map(c, 'L', MaxX, MaxY, &f);
             c.changeColor(8);
             x = 1, y = 1;
-            placeCharacter(c, &x, &y, "SS", MaxX, MaxY, &f);
+            placeCharacter(c, &x, &y, "SS", MaxX, MaxY, &f, randomGateX, randomGateY);
         }
         else if (menu(c, &x, &y) == 6)
         {
