@@ -99,6 +99,87 @@ void map(Console c, char Difficulty, int MaxX, int MaxY, Coordinate_System *f)
     }
 }
 
+char Difficulty_menu(Console c)
+{
+    system("cls"); // clearing the screen
+
+    int x = (c.getMaxX() / 2) - 8;
+    int y = 13;
+    for (int i = 0; i < 15; i++)
+    {
+        c.gotoxy(x, y);
+        if (y == 13 || y == 27)
+            cout << "-----------------------------";
+        else
+            cout << "*\t\t\t\t  *";
+        y += 1;
+    }
+    x = c.getMaxX() / 2;
+    y = 15;
+    c.gotoxy(x, y);
+    cout << "Easy";
+    y = 17;
+    c.gotoxy(x, y);
+    cout << "Medium";
+    y = 19;
+    c.gotoxy(x, y);
+    cout << "Hard";
+    y = 15;
+    x -= 5;
+    c.gotoxy(x, y);
+    cout << "-->";
+    char key;
+    while (true)
+    {
+        key = getch();
+        switch (key)
+        {
+
+            char key;
+            while (true)
+            {
+            case 's':
+                if (y < 19)
+                {
+                    c.gotoxy(x, y);
+                    cout << "   ";
+                    y += 2;
+                    c.gotoxy(x, y);
+                    cout << "-->";
+                }
+                break;
+            case 'w':
+                if (y > 15)
+                {
+                    c.gotoxy(x, y);
+                    cout << "   ";
+                    y -= 2;
+                    c.gotoxy(x, y);
+                    cout << "-->";
+                }
+                break;
+            case Enter_key:
+                if (y == 15)
+                {
+                    return 'E';
+                }
+                else if (y == 17)
+                {
+                    return 'M';
+                }
+                else if (y == 19)
+                {
+                    return 'H';
+                }
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+}
+
 int menu(Console c, int *x, int *y)
 {
     system("cls"); // clearing the screen
@@ -119,19 +200,19 @@ int menu(Console c, int *x, int *y)
     *y = 15;
     c.gotoxy(*x, *y);
     cout << "Start a new game";
-    *y += 2;
+    *y = 17;
     c.gotoxy(*x, *y);
     cout << "Load";
-    *y += 2;
+    *y = 19;
     c.gotoxy(*x, *y);
     cout << "Difficulty";
-    *y += 2;
+    *y = 21;
     c.gotoxy(*x, *y);
     cout << "Manual";
-    *y += 2;
+    *y = 23;
     c.gotoxy(*x, *y);
     cout << "Scores";
-    *y += 2;
+    *y = 25;
     c.gotoxy(*x, *y);
     cout << "Exit";
     *y = 15;
@@ -170,6 +251,10 @@ int menu(Console c, int *x, int *y)
             {
                 return 1;
             }
+            else if (*y == 19)
+            {
+                return 3;
+            }
             else if (*y == 25)
             {
                 system("cls");
@@ -195,32 +280,37 @@ void Block(Console c, int MaxX, int MaxY, int n, int X_Blocks, Coordinate_System
             randomNum = ((rand() % X_Blocks) * 4) + 1;
             if (!((randomNum == 1 && j == 1) || (randomNum == 5 && j == 1) || (randomNum == 1 && j == 3)))
             {
-                c.changeColor(13);
-                c.gotoxy(randomNum, j);
-                cout << "_-_";
-                f->COORD[randomNum][j] = 'b';
-                if (rand() % (n * 2) == 0 && k == 0)
+                if (f->COORD[randomNum][j] == 'f')
                 {
-                    *randomGateX = randomNum;
-                    *randomGateY = j;
-                    k++;
+                    c.changeColor(13);
+                    c.gotoxy(randomNum, j);
+                    cout << "-_-";
+                    f->COORD[randomNum][j] = 'a';
+                    if (rand() % (n * 2) == 0 && k == 0)
+                    {
+                        *randomGateX = randomNum;
+                        *randomGateY = j;
+                        k++;
+                    }
                 }
             }
         }
     }
     if (k == 0)
     {
+        f->COORD[MaxX - 4][MaxY - 1] = 'a';
         c.gotoxy(MaxX - 4, MaxY - 1);
-        cout << "-_-";
+        cout << "_-_";
         *randomGateX = MaxX - 4;
         *randomGateY = MaxY - 1;
     }
 }
 
-void Enemy(Console c, int MaxY, int n, int X_Blocks, Coordinate_System *f)
+void Enemy(Console c, int MaxY, int n, int X_Blocks, int *enemy_number, Coordinate_System *f)
 {
     srand(time(0));
     int randomNum;
+    *enemy_number = 0;
     for (int i = 0; i < n; i++)
     {
         for (int j = 1; j < MaxY; j += 2)
@@ -228,21 +318,86 @@ void Enemy(Console c, int MaxY, int n, int X_Blocks, Coordinate_System *f)
             randomNum = ((rand() % X_Blocks) * 4) + 1;
             if (!((randomNum == 1 && j == 1) || (randomNum == 5 && j == 1) || (randomNum == 1 && j == 3)))
             {
-                c.changeColor(12);
-                c.gotoxy(randomNum, j);
-                cout << "O-O";
-                f->COORD[randomNum][j] = 'e';
+                if (f->COORD[randomNum][j] == 'f')
+                {
+                    c.changeColor(12);
+                    c.gotoxy(randomNum, j);
+                    cout << "O-O";
+                    f->COORD[randomNum][j] = 'e';
+                    *enemy_number += 1;
+                }
             }
         }
     }
 }
 
-void Game_Over()
+void Game_Over(Console c)
 {
     system("cls");
+
+    int x = (c.getMaxX() / 2) - 8;
+    int y = 17;
+    for (int i = 0; i < 7; i++)
+    {
+        c.gotoxy(x, y);
+        if (y == 17 || y == 23)
+            cout << "-----------------------------";
+        else
+            cout << "*\t\t\t\t  *";
+        y += 1;
+    }
+
+    x = c.getMaxX() / 2;
+    y = 19;
+    c.gotoxy(x, y);
+    cout << "Game Over!";
+    y = 21;
+    c.gotoxy(x, y);
+    cout << "Return to menu";
+    y = 21;
+    x -= 5;
+    c.gotoxy(x, y);
+    cout << "-->";
+    getch();
 }
 
-void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int MaxY, Coordinate_System *f, int GateX, int GateY)
+void Win_Game(Console c, int x, int y, int P_move, int B_number)
+{
+    int W = 1;
+    system("cls");
+    int score = 100000 / (1 + W * P_move + W * B_number);
+    x = (c.getMaxX() / 2) - 8;
+    y = 13;
+    for (int i = 0; i < 15; i++)
+    {
+        c.gotoxy(x, y);
+        if (y == 13 || y == 27)
+            cout << "-----------------------------";
+        else
+            cout << "*\t\t\t\t  *";
+        y += 1;
+    }
+    x = c.getMaxX() / 2;
+    y = 15;
+    c.gotoxy(x, y);
+    cout << "YOU WIN!";
+    y = 17;
+    c.gotoxy(x, y);
+    cout << "Your Score: ";
+    y = 19;
+    c.gotoxy(x, y);
+    cout << score;
+    y = 21;
+    c.gotoxy(x, y);
+    cout << "Return to menu";
+    y = 21;
+    x -= 5;
+    c.gotoxy(x, y);
+    cout << "-->";
+    getch();
+}
+
+void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int MaxY, int enemy_number, Coordinate_System *f, int GateX, int GateY)
 {
     c.gotoxy(*x, *y);
     c.changeColor(14);
@@ -251,6 +406,10 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
     char key;
     int Bomb_X;
     int Bomb_Y;
+    int Player_Movment = 0;
+    int Bomb_Number = 0;
+    int Bomb_Placed;
+
     while (true)
     {
         key = getch();
@@ -278,6 +437,7 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                    Player_Movment++;
                 }
                 else if (f->COORD[*x][*y - 2] == 'g')
                 {
@@ -288,10 +448,11 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'g';
                     c.gotoxy(*x, *y);
                     cout << "[S]";
+                    Player_Movment++;
                 }
                 else if (f->COORD[*x][*y - 2] == 'e')
                 {
-                    Game_Over();
+                    Game_Over(c);
                     return;
                 }
             }
@@ -318,6 +479,7 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                    Player_Movment++;
                 }
                 else if (f->COORD[*x][*y + 2] == 'g')
                 {
@@ -328,10 +490,11 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'g';
                     c.gotoxy(*x, *y);
                     cout << "[S]";
+                    Player_Movment++;
                 }
                 else if (f->COORD[*x][*y + 2] == 'e')
                 {
-                    Game_Over();
+                    Game_Over(c);
                     return;
                 }
             }
@@ -358,6 +521,7 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                    Player_Movment++;
                 }
                 else if (f->COORD[*x + 4][*y] == 'g')
                 {
@@ -368,10 +532,11 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'g';
                     c.gotoxy(*x, *y);
                     cout << "[S]";
+                    Player_Movment++;
                 }
                 else if (f->COORD[*x + 4][*y] == 'e')
                 {
-                    Game_Over();
+                    Game_Over(c);
                     return;
                 }
             }
@@ -398,6 +563,7 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'p';
                     c.gotoxy(*x, *y);
                     cout << character;
+                    Player_Movment++;
                 }
                 else if (f->COORD[*x - 4][*y] == 'g')
                 {
@@ -408,110 +574,150 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
                     f->COORD[*x][*y] = 'g';
                     c.gotoxy(*x, *y);
                     cout << "[S]";
+                    Player_Movment++;
                 }
                 else if (f->COORD[*x - 4][*y] == 'e')
                 {
-                    Game_Over();
+                    Game_Over(c);
                     return;
                 }
             }
             break;
         case 'e':
-            Bomb_X = *x;
-            Bomb_Y = *y;
-            c.gotoxy(Bomb_X, Bomb_Y);
-            f->COORD[Bomb_X][Bomb_Y] = 'b';
-            c.changeColor(15);
-            cout << "BOM";
+            if (!Bomb_Placed)
+            {
+                if (f->COORD[*x][*y] != 'g')
+                {
+                    Bomb_Placed = true;
+                    Bomb_X = *x;
+                    Bomb_Y = *y;
+                    c.gotoxy(Bomb_X, Bomb_Y);
+                    f->COORD[Bomb_X][Bomb_Y] = 'b';
+                    c.changeColor(15);
+                    cout << "BOM";
+                    Bomb_Number++;
+                }
+            }
             break;
         case 'q':
-            f->COORD[Bomb_X][Bomb_Y] = 'f';
-            c.gotoxy(Bomb_X, Bomb_Y);
-            cout << "   ";
-            if (Bomb_X + 4 <= MaxX - 4)
+            if (Bomb_Placed)
             {
-                if (f->COORD[Bomb_X + 4][Bomb_Y] != 'c')
+                Bomb_Placed = false;
+                f->COORD[Bomb_X][Bomb_Y] = 'f';
+                c.gotoxy(Bomb_X, Bomb_Y);
+                cout << "   ";
+                if (Bomb_X + 4 <= MaxX - 4)
                 {
-                    c.gotoxy(Bomb_X + 4, Bomb_Y);
-                    cout << "   ";
-                    if (f->COORD[Bomb_X + 4][Bomb_Y] == 'p')
+                    if (f->COORD[Bomb_X + 4][Bomb_Y] != 'c')
                     {
-                        Game_Over();
-                        return;
+                        c.gotoxy(Bomb_X + 4, Bomb_Y);
+                        cout << "   ";
+                        if (f->COORD[Bomb_X + 4][Bomb_Y] == 'e')
+                        {
+                            enemy_number--;
+                        }
+                        if (f->COORD[Bomb_X + 4][Bomb_Y] == 'p')
+                        {
+                            Game_Over(c);
+                            return;
+                        }
+                        else
+                            f->COORD[Bomb_X + 4][Bomb_Y] = 'f';
+                        if (Bomb_X + 4 == GateX && Bomb_Y == GateY)
+                        {
+                            c.gotoxy(GateX, GateY);
+                            cout << "[ ]";
+                            f->COORD[GateX][GateY] = 'g';
+                        }
                     }
-                    else
-                        f->COORD[Bomb_X + 4][Bomb_Y] = 'f';
-                    if (Bomb_X + 4 == GateX && Bomb_Y == GateY)
+                }
+                if (Bomb_X - 4 >= 1)
+                {
+                    if (f->COORD[Bomb_X - 4][Bomb_Y] != 'c')
                     {
-                        c.gotoxy(GateX, GateY);
-                        cout << "[ ]";
-                        f->COORD[GateX][GateY] = 'g';
+                        c.gotoxy(Bomb_X - 4, Bomb_Y);
+                        cout << "   ";
+                        if (f->COORD[Bomb_X - 4][Bomb_Y] == 'e')
+                        {
+                            enemy_number--;
+                        }
+                        if (f->COORD[Bomb_X - 4][Bomb_Y] == 'p')
+                        {
+                            Game_Over(c);
+                            return;
+                        }
+                        else
+                            f->COORD[Bomb_X - 4][Bomb_Y] = 'f';
+                        if (Bomb_X - 4 == GateX && Bomb_Y == GateY)
+                        {
+                            c.gotoxy(GateX, GateY);
+                            cout << "[ ]";
+                            f->COORD[GateX][GateY] = 'g';
+                        }
+                    }
+                }
+                if (Bomb_Y - 2 >= 1)
+                {
+                    if (f->COORD[Bomb_X][Bomb_Y - 2] != 'c')
+                    {
+                        c.gotoxy(Bomb_X, Bomb_Y - 2);
+                        cout << "   ";
+                        if (f->COORD[Bomb_X][Bomb_Y - 2] == 'e')
+                        {
+                            enemy_number--;
+                        }
+                        if (f->COORD[Bomb_X][Bomb_Y - 2] == 'p')
+                        {
+                            Game_Over(c);
+                            return;
+                        }
+                        else
+                            f->COORD[Bomb_X][Bomb_Y - 2] = 'f';
+                        if (Bomb_X == GateX && Bomb_Y - 2 == GateY)
+                        {
+                            c.gotoxy(GateX, GateY);
+                            cout << "[ ]";
+                            f->COORD[GateX][GateY] = 'g';
+                        }
+                    }
+                }
+                if (Bomb_Y + 2 <= MaxY - 1)
+                {
+                    if (f->COORD[Bomb_X][Bomb_Y + 2] != 'c')
+                    {
+                        c.gotoxy(Bomb_X, Bomb_Y + 2);
+                        cout << "   ";
+                        if (f->COORD[Bomb_X][Bomb_Y + 2] == 'e')
+                        {
+                            enemy_number--;
+                        }
+                        if (f->COORD[Bomb_X][Bomb_Y + 2] == 'p')
+                        {
+                            Game_Over(c);
+                            return;
+                        }
+                        else
+                            f->COORD[Bomb_X][Bomb_Y + 2] = 'f';
+                        if (Bomb_X == GateX && Bomb_Y + 2 == GateY)
+                        {
+                            c.gotoxy(GateX, GateY);
+                            cout << "[ ]";
+                            f->COORD[GateX][GateY] = 'g';
+                        }
                     }
                 }
             }
-            if (Bomb_X - 4 >= 1)
+            break;
+        case Enter_key:
+            if (f->COORD[*x][*y] == 'g')
             {
-                if (f->COORD[Bomb_X - 4][Bomb_Y] != 'c')
+                if (enemy_number == 0)
                 {
-                    c.gotoxy(Bomb_X - 4, Bomb_Y);
-                    cout << "   ";
-                    if (f->COORD[Bomb_X - 4][Bomb_Y] == 'p')
-                    {
-                        Game_Over();
-                        return;
-                    }
-                    else
-                        f->COORD[Bomb_X - 4][Bomb_Y] = 'f';
-                    if (Bomb_X - 4 == GateX && Bomb_Y == GateY)
-                    {
-                        c.gotoxy(GateX, GateY);
-                        cout << "[ ]";
-                        f->COORD[GateX][GateY] = 'g';
-                    }
+                    Win_Game(c, *x, *y, Player_Movment, Bomb_Number);
+                    return;
                 }
             }
-            if (Bomb_Y - 2 >= 1)
-            {
-                if (f->COORD[Bomb_X][Bomb_Y - 2] != 'c')
-                {
-                    c.gotoxy(Bomb_X, Bomb_Y - 2);
-                    cout << "   ";
-                    if (f->COORD[Bomb_X][Bomb_Y - 2] == 'p')
-                    {
-                        Game_Over();
-                        return;
-                    }
-                    else
-                        f->COORD[Bomb_X][Bomb_Y - 2] = 'f';
-                    if (Bomb_X == GateX && Bomb_Y - 2 == GateY)
-                    {
-                        c.gotoxy(GateX, GateY);
-                        cout << "[ ]";
-                        f->COORD[GateX][GateY] = 'g';
-                    }
-                }
-            }
-            if (Bomb_Y + 2 <= MaxY - 1)
-            {
-                if (f->COORD[Bomb_X][Bomb_Y + 2] != 'c')
-                {
-                    c.gotoxy(Bomb_X, Bomb_Y + 2);
-                    cout << "   ";
-                    if (f->COORD[Bomb_X][Bomb_Y + 2] == 'p')
-                    {
-                        Game_Over();
-                        return;
-                    }
-                    else
-                        f->COORD[Bomb_X][Bomb_Y + 2] = 'f';
-                    if (Bomb_X == GateX && Bomb_Y + 2 == GateY)
-                    {
-                        c.gotoxy(GateX, GateY);
-                        cout << "[ ]";
-                        f->COORD[GateX][GateY] = 'g';
-                    }
-                }
-            }
+
             break;
         case Esc_key:
             return;
@@ -529,28 +735,48 @@ int main()
     int x = 0;
     int y = 0;
     int MaxX = 69;
-    int MaxY = 20;
+    int MaxY = 6; // 20
     int X_Blocks = (MaxX - 1) / 4;
     int randomGateX;
     int randomGateY;
+    int enemy_number;
+    char Difficulty = 'E';
+    int menu_option;
 
     c.changeColor(10);
     c.setFullScreen();
     while (true)
     {
+        if (Difficulty == 'E')
+        {
+            MaxY = 6;
+        }
+        else if (Difficulty == 'M')
+        {
+            MaxY = 12;
+        }
+        else if (Difficulty == 'H')
+        {
+            MaxY = 18;
+        }
         Coordinate_System f;
         f.ini();
-        if (menu(c, &x, &y) == 1)
+        menu_option = menu(c, &x, &y);
+        if (menu_option == 1)
         {
             system("cls");
-            Block(c, MaxX, MaxY, 5, X_Blocks, &f, &randomGateX, &randomGateY);
-            Enemy(c, MaxY, 2, X_Blocks, &f);
             map(c, 'L', MaxX, MaxY, &f);
+            Block(c, MaxX, MaxY, 5, X_Blocks, &f, &randomGateX, &randomGateY);
+            Enemy(c, MaxY, 2, X_Blocks, &enemy_number, &f);
             c.changeColor(8);
             x = 1, y = 1;
-            placeCharacter(c, &x, &y, "SS", MaxX, MaxY, &f, randomGateX, randomGateY);
+            placeCharacter(c, &x, &y, "SS", MaxX, MaxY, enemy_number, &f, randomGateX, randomGateY);
         }
-        else if (menu(c, &x, &y) == 6)
+        else if (menu_option == 3)
+        {
+            Difficulty = Difficulty_menu(c);
+        }
+        else if (menu_option == 6)
         {
             break;
         }
