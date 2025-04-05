@@ -180,6 +180,22 @@ char Difficulty_menu(Console c)
     }
 }
 
+void Help_menu(Console c)
+{
+    c.gotoxy(0, 0);
+    cout << "Deep beneath the surface lies a hidden realm, home to tiny creatures known as the Bombarians."
+         << " For years, they lived peacefully, powered by an ancient crystal that held the energy of life itself."
+         << " But one day, a dark force invaded their land, stole the crystal, and plunged their world into chaos.\n\n"
+         << "This is where the hero of the story, Spoon Man, steps in."
+         << " He is a brave and ingenious Bombarian whose only weapon is his collection of powerful, handcrafted bombs."
+         << " Spoon Man must navigate through perilous mazes, disable deadly traps, and face off against enemy guards to retrieve the lost crystal.\n\n"
+         << "But the journey is far more dangerous than it seems. Spoon Man soon discovers that the dark force plans to use the crystal’s power to activate an ancient,"
+         << " devastating weapon—one capable of destroying the entire Bombarian realm.\n\n"
+         << "Can Spoon Man defeat his enemies, recover the crystal, and save his home in this race against time? It’s all up to his courage and explosive skills.";
+
+    getch();
+}
+
 int menu(Console c, int *x, int *y)
 {
     system("cls"); // clearing the screen
@@ -208,7 +224,7 @@ int menu(Console c, int *x, int *y)
     cout << "Difficulty";
     *y = 21;
     c.gotoxy(*x, *y);
-    cout << "Manual";
+    cout << "Help";
     *y = 23;
     c.gotoxy(*x, *y);
     cout << "Scores";
@@ -254,6 +270,10 @@ int menu(Console c, int *x, int *y)
             else if (*y == 19)
             {
                 return 3;
+            }
+            else if (*y == 21)
+            {
+                return 4;
             }
             else if (*y == 25)
             {
@@ -408,7 +428,7 @@ void placeCharacter(Console c, int *x, int *y, string character, int MaxX, int M
     int Bomb_Y;
     int Player_Movment = 0;
     int Bomb_Number = 0;
-    int Bomb_Placed;
+    bool Bomb_Placed;
 
     while (true)
     {
@@ -747,37 +767,46 @@ int main()
     c.setFullScreen();
     while (true)
     {
-        if (Difficulty == 'E')
+        switch (Difficulty)
         {
+        case 'E':
             MaxY = 6;
-        }
-        else if (Difficulty == 'M')
-        {
+            break;
+        case 'M':
             MaxY = 12;
-        }
-        else if (Difficulty == 'H')
-        {
+            break;
+        case 'H':
             MaxY = 18;
+            break;
+        default:
+            break;
         }
         Coordinate_System f;
         f.ini();
         menu_option = menu(c, &x, &y);
-        if (menu_option == 1)
+        switch (menu_option)
         {
+        case 1:
             system("cls");
             map(c, 'L', MaxX, MaxY, &f);
             Block(c, MaxX, MaxY, 5, X_Blocks, &f, &randomGateX, &randomGateY);
             Enemy(c, MaxY, 2, X_Blocks, &enemy_number, &f);
             c.changeColor(8);
             x = 1, y = 1;
-            placeCharacter(c, &x, &y, "SS", MaxX, MaxY, enemy_number, &f, randomGateX, randomGateY);
-        }
-        else if (menu_option == 3)
-        {
+            placeCharacter(c, &x, &y, "-S-", MaxX, MaxY, enemy_number, &f, randomGateX, randomGateY);
+            break;
+        case 3:
+            system("cls");
             Difficulty = Difficulty_menu(c);
-        }
-        else if (menu_option == 6)
-        {
+            break;
+        case 4:
+            system("cls");
+            Help_menu(c);
+            break;
+        case 6:
+            exit(0);
+            break;
+        default:
             break;
         }
     }
