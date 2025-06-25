@@ -51,9 +51,8 @@ How fast and clean can you clear the level? 🧠⏱️
 
 ![alt text](<Screenshot (1).png>)
 
-🖼️ Coming soon!
-Stay tuned for visuals of Spoon Man in action!
-----------------------------------------------------
+---
+
 👨‍💻 Creator
 
 Made with 💡, 🎯 and 💻 by
