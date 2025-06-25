@@ -46,7 +46,10 @@ git clone https://github.com/AlirezaVaghei85/spoon-man.git
 When you finish the game, your final score will be shown based on your performance.
 How fast and clean can you clear the level? 🧠⏱️
 
+---
+
 📸 Screenshots
+
 ![alt text](<Screenshot.png>)
 
 ![alt text](<Screenshot (1).png>)
@@ -54,6 +57,5 @@ How fast and clean can you clear the level? 🧠⏱️
 ---
 
 👨‍💻 Creator
-
 Made with 💡, 🎯 and 💻 by
 Alireza Vaghei
